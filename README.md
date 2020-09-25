@@ -1,0 +1,1 @@
+# osic_competition
