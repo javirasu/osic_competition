@@ -1,0 +1,6 @@
+.vscode
+scripts/__pycache__
+config.yaml
+data/
+*.npy
+*.pickle
