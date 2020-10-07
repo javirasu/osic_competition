@@ -1,8 +1,12 @@
 # osic_competition
 
 ## Resources
+### Bayesian LR
+[11d Machine Learning: Bayesian Linear Regression](https://www.youtube.com/watch?v=LzZ5b3wdZQk)
 
-### Ideas for models:
+### Kaggle 
+
+#### Ideas for models:
 - [ ] [Making use of CT scans: end-to-end model that uses CT scan latent features and tabular features](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/169121)
 
 - [ ] [3D Deep Convolutional Auto Encoders](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/167025)
@@ -25,16 +29,16 @@
 
 - [ ] [Patient Clustering/Unsupervised learning](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/186619) 
 
-### Uncertainty prediction:
+#### Uncertainty prediction:
 - [ ] [Uncertainty prediction with neural nets](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/167764)
 
 - [ ] [How to calculate the Confidence](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/173636)
 
 - [ ] [What was your approach in predicting confidence?](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/181632) 
 
-### Explaining metric:
+#### Explaining metric:
 - [ ] [Laplace Log Likelihood Score : Understanding the Theory for Beginners](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/180637)
-### Data topic:
+#### Data topic:
 - [ ] [Relationship between "FVC" and "Percent" seems to hint at lots of hidden information.](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/175597) 
 
 - [ ] [Lung Mask Dataset](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/166748)
@@ -55,7 +59,7 @@
 
 - [ ] [Masks on Lungs](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/169658) 
 
-### Misc:
+#### Misc:
 - [ ] [Leaderboard Probing](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/183079)
 
 - [ ] [Test time augmentation for uncertainty estimation](https://www.kaggle.com/c/osic-pulmonary-fibrosis-progression/discussion/183235)

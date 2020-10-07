@@ -44,7 +44,7 @@ def extract_img_id(x):
 def normalize_img(x, x_min, x_max):
     return ((x-x_min)/((x_max-x_min))).astype(np.float32)
 
-def load_ct_scans(path_imgs, patient_encoder, n_frames=30, frames_size=(512,512)):
+def load_ct_scans(path_imgs, patient_ids, n_frames=30, frames_size=(224,224)):
 
     if not path_imgs.endswith('/'):
         path_imgs +='/'
@@ -52,8 +52,9 @@ def load_ct_scans(path_imgs, patient_encoder, n_frames=30, frames_size=(512,512)
     data = dict()
 
     # Load image
+    problem_ct = []
 
-    for patient in tqdm(list(patient_encoder.encoder_.keys())):
+    for patient in tqdm(patient_ids):
 
         image_files = glob.glob(os.path.join(path_imgs+patient,'*.dcm'))
         image_order = np.argsort(np.array([extract_img_id(x) for x in image_files]))
@@ -64,9 +65,14 @@ def load_ct_scans(path_imgs, patient_encoder, n_frames=30, frames_size=(512,512)
             image_data = pydicom.read_file(image_files[i])
             patient_id = image_data.PatientID
             if patient_id != patient:
-                raise Exception('Patient Ids do not match') 
-                
-            img = np.array(image_data.pixel_array)
+                raise Exception('Patient Ids do not match')  
+            
+            try:
+                img = np.array(image_data.pixel_array)
+            except:
+                problem_ct.append(patient)
+
+            
             # Removing empty space around the CT
             mask_rows = np.argwhere(np.sum(img, axis=1) != 0).squeeze()
             mask_cols = np.argwhere(np.sum(img, axis=0) != 0).squeeze()
@@ -74,13 +80,16 @@ def load_ct_scans(path_imgs, patient_encoder, n_frames=30, frames_size=(512,512)
             if img.shape[0] == 0 or img.shape[1] == 0:
                 continue
             imgs_list.append(img)
+            
+        if len(imgs_list) == 0:
+            continue
 
         # Subsampling to 30 frames
         if len(imgs_list) > n_frames:
             subsample = np.linspace(0, len(imgs_list)-1, num=n_frames, dtype=np.int32).tolist()
             imgs_list = [imgs_list[i] for i in subsample]
 
-        # Making all images 512x512
+        # Making all images same dimensions
         imgs_list = [resize(x, frames_size, anti_aliasing=True) for x in imgs_list]
 
         # Normalizing frames
@@ -107,13 +116,18 @@ def load_ct_scans(path_imgs, patient_encoder, n_frames=30, frames_size=(512,512)
         if np.min(frames_scan) != 0 or np.max(frames_scan) != 1:
             raise Exception('Error normalization patient '+str(patient_encoder.transform([patient]))) 
 
-        data[patient_encoder.transform([patient])] = frames_scan
+        # Repeat to 3 channels for vgg
+        frames_scan = np.expand_dims(frames_scan, -1)
+
+        #Store data
+        data[patient] = frames_scan.astype(np.float32)
 
     # Filter to remove background
     for k,v in data.items():
+        ## Preprocess to get into VGG preprocessing
         data[k] = filter_by_std(v, alpha=0.01)
 
-    return data
+    return data, np.unique(problem_ct)
 
 def process_tabula(df):
 
@@ -143,7 +157,7 @@ def make_ct_git(data, filename):
 
     ims = []
     for image in data:
-        im = plt.imshow(image, animated=True, cmap='jet', vmin=0, vmax=1)
+        im = plt.imshow(image.squeeze(), animated=True, cmap='jet', vmin=0, vmax=1)
         plt.colorbar()
         plt.axis("off")
         ims.append([im])

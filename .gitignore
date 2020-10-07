@@ -5,3 +5,5 @@ data/
 *.npy
 *.pickle
 *.csv
+*.h5
+*.png
